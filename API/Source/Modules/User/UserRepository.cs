@@ -1,4 +1,5 @@
 using API.Source.Exception.Http;
+using API.Source.Exception.Validation;
 using API.Source.Model.Enum;
 using API.Source.Modules.User.Interfaces;
 using Microsoft.AspNetCore.Identity;
@@ -22,13 +23,15 @@ public class UserRepository : IUserRepository
         return _userManager.Users.AnyAsync(user => user.Email.Equals(email));
     }
 
-    public async Task<Model.Entity.User> CreateEntity(string firstName,
+    public async Task<Model.Entity.User> CreateEntity(
+        string firstName,
         string lastName,
         string userName,
         string email,
         string password,
         Gender gender,
-        DateTime birthDate)
+        DateTime birthDate
+    )
     {
         var user = new Model.Entity.User
         {
@@ -45,6 +48,13 @@ public class UserRepository : IUserRepository
         if (createResult.Succeeded)
         {
             return user;
+        }
+
+        var errors = createResult.Errors.ToList();
+        
+        if (errors.Count > 0)
+        {
+            throw new ValidationException(errors[0].Description);
         }
 
         // log error
