@@ -1,25 +1,59 @@
+using API.Source.Common;
+using API.Source.Config;
+using API.Source.Middleware;
+using API.Source.Model;
+using API.Source.Modules.Authentication;
+using API.Source.Modules.User;
+using API.Source.Security;
+using Microsoft.EntityFrameworkCore;
+using Swashbuckle.AspNetCore.SwaggerUI;
+
 var builder = WebApplication.CreateBuilder(args);
+var connectionString = builder.Configuration.GetConnectionString("Postgresql");
+
+// for date in postgres
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 // Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services
+    .AddCors()
+    .AddSwaggerModule()
+    .AddScoped<ExceptionMiddleware>()
+    .AddDbContext<DataContext>(o => o.UseNpgsql(connectionString))
+    .AddSecurityModule()
+    .AddCommonModule()
+    .AddAuthenticationModule(builder.Configuration)
+    .AddUserModule()
+    .AddEndpointsApiExplorer()
+    .AddControllers();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        options.DocExpansion(DocExpansion.None);
+        options.EnablePersistAuthorization();
+    });
 }
 
-app.UseHttpsRedirection();
+app.UseMiddleware<ExceptionMiddleware>();
+app.UseCors(policyBuilder =>
+{
+    policyBuilder
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .SetIsOriginAllowed(_ => true)
+        .AllowCredentials();
+});
 
+// app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();
+
+
+//TODO date time problem needs solving
