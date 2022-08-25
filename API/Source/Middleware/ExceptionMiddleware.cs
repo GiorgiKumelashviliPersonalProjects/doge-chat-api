@@ -36,7 +36,6 @@ public class ExceptionMiddleware: IMiddleware
             
             _logger.LogInformation(message, e.Message, e.StackTrace);
             
-            
             if (!response.HasStarted)
             {
                 var resolvedException = e as GenericException ?? new InternalServerException();

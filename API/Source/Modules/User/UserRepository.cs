@@ -58,8 +58,7 @@ public class UserRepository : IUserRepository
         }
 
         // log error
-        var logParamArgs = string.Join("\n", createResult.Errors.Select(e => e.Description));
-        _logger.LogError("error creating user: {ErrorDescription}", logParamArgs);
-        throw new InternalServerException();
+        InternalServerException.ThrowCustomException(_logger, createResult);
+        return null!;
     }
 }

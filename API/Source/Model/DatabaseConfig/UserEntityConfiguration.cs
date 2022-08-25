@@ -2,7 +2,7 @@ using API.Source.Model.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace API.Source.Model.Config;
+namespace API.Source.Model.DatabaseConfig;
 
 public class UserEntityConfiguration : IEntityTypeConfiguration<User>
 {

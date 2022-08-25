@@ -32,7 +32,7 @@ public class SignUpConfirmVerificationCodeDto
     [StringLength(5)] public string Code { get; }
 
     [RegularExpression(
-        Constants.onlyLettersAndNumbers,
+        Constants.OnlyLettersAndNumbers,
         ErrorMessage = "Username is invalid, can only contain letters or digits"
     )]
     [StringLength(512, MinimumLength = 1)]
