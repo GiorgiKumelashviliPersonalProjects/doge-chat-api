@@ -3,16 +3,24 @@ using API.Source.Config;
 using API.Source.Middleware;
 using API.Source.Model;
 using API.Source.Modules.Authentication;
+using API.Source.Modules.ChatMessage;
 using API.Source.Modules.User;
 using API.Source.Security;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.SwaggerUI;
+
+//TODO permission and roles
+//TODO date time problem needs solving
+//todo remove some unnecessary fields from user like password
+// for date in postgres
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("Postgresql");
-
-// for date in postgres
-AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+var authorizationPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
 
 // Add services to the container.
 builder.Services
@@ -22,10 +30,16 @@ builder.Services
     .AddDbContext<DataContext>(o => o.UseNpgsql(connectionString))
     .AddSecurityModule()
     .AddCommonModule()
+    .AddChatMessageModule()
     .AddAuthenticationModule(builder.Configuration)
     .AddUserModule()
     .AddEndpointsApiExplorer()
-    .AddControllers();
+    .AddControllers(o => o.Filters.Add(new AuthorizeFilter(authorizationPolicy)))
+    .AddNewtonsoftJson(o =>
+    {
+        // for double relation loop removal
+        o.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+    });
 
 var app = builder.Build();
 
@@ -49,11 +63,12 @@ app.UseCors(policyBuilder =>
         .AllowCredentials();
 });
 
-// app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
+
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
-
-
-//TODO date time problem needs solving

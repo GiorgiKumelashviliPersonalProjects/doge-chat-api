@@ -1,4 +1,5 @@
 using API.Source.Model.Enum;
+using API.Source.Modules.User.Common;
 using API.Source.Modules.User.Interfaces;
 using API.Source.Modules.User.RefreshToken;
 
@@ -17,7 +18,17 @@ public class UserService : IUserService
 
     public async Task<bool> CheckIfEmailExists(string email)
     {
-        return await _userRepository.GetUserByEmail(email);
+        return await _userRepository.CheckUserByEmail(email);
+    }
+
+    public Task<Model.Entity.User?> GetUserById(long userId, GetUserProps? getUserProps = null)
+    {
+        return _userRepository.GetUserById(userId, getUserProps);
+    }
+
+    public Task<Model.Entity.User?> GetUserByEmail(string email)
+    {
+        return _userRepository.GetUserByEmail(email);
     }
 
     public Task<Model.Entity.User> CreateUser(

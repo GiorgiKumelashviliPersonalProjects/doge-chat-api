@@ -3,6 +3,7 @@ using System;
 using API.Source.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220827115223_AddedChatMessages")]
+    partial class AddedChatMessages
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,7 +53,7 @@ namespace API.Migrations
 
                     b.HasIndex("SenderId");
 
-                    b.ToTable("ChatMessages");
+                    b.ToTable("ChatMessage");
                 });
 
             modelBuilder.Entity("API.Source.Model.Entity.Permission", b =>
@@ -359,13 +361,13 @@ namespace API.Migrations
             modelBuilder.Entity("API.Source.Model.Entity.ChatMessage", b =>
                 {
                     b.HasOne("API.Source.Model.Entity.User", "Receiver")
-                        .WithMany("ReceiverChatMessages")
+                        .WithMany()
                         .HasForeignKey("ReceiverId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("API.Source.Model.Entity.User", "Sender")
-                        .WithMany("SenderChatMessages")
+                        .WithMany()
                         .HasForeignKey("SenderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -452,10 +454,6 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Source.Model.Entity.User", b =>
                 {
-                    b.Navigation("ReceiverChatMessages");
-
-                    b.Navigation("SenderChatMessages");
-
                     b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618

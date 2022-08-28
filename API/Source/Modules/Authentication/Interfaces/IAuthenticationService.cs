@@ -6,4 +6,5 @@ public interface IAuthenticationService
 {
     Task<Model.Entity.RequestSignup> SignupRequest(string email);
     Task<AuthenticationPayloadDto> SignUpConfirmVerificationCode(SignUpConfirmVerificationCodeDto body);
+    Task<AuthenticationPayloadDto> SignIn(string email, string password);
 }

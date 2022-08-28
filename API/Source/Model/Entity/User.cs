@@ -13,8 +13,13 @@ public class User : IdentityUser<long>
 
     public Gender Gender { get; set; }
 
+    public bool IsOnline { get; set; }
+    
     public ICollection<UserRole> UserRoles { get; set; }
 
     public DateTime UpdatedAt { get; set; }
     public DateTime CreatedAt { get; set; }
+    
+    public List<ChatMessage>? SentChatMessages { get; set; }
+    public List<ChatMessage>? ReceivedChatMessages { get; set; }
 }

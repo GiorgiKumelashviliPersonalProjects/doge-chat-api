@@ -32,6 +32,10 @@ public class UserEntityConfiguration : IEntityTypeConfiguration<User>
             .HasMaxLength(MaxLength);
 
         builder
+            .Property(entity => entity.IsOnline)
+            .HasDefaultValue(false);
+
+        builder
             .Property(entity => entity.UserName)
             .IsRequired()
             .HasMaxLength(MaxLength);

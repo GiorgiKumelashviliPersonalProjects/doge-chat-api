@@ -1,6 +1,9 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using API.Source.Exception.Http;
 using API.Source.Exception.Validation;
 using API.Source.Model.Enum;
+using API.Source.Modules.User.Common;
 using API.Source.Modules.User.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -18,7 +21,7 @@ public class UserRepository : IUserRepository
         _logger = logger;
     }
 
-    public Task<bool> GetUserByEmail(string email)
+    public Task<bool> CheckUserByEmail(string email)
     {
         return _userManager.Users.AnyAsync(user => user.Email.Equals(email));
     }
@@ -51,7 +54,7 @@ public class UserRepository : IUserRepository
         }
 
         var errors = createResult.Errors.ToList();
-        
+
         if (errors.Count > 0)
         {
             throw new ValidationException(errors[0].Description);
@@ -60,5 +63,28 @@ public class UserRepository : IUserRepository
         // log error
         InternalServerException.ThrowCustomException(_logger, createResult);
         return null!;
+    }
+
+    public async Task<Model.Entity.User?> GetUserByEmail(string email)
+    {
+        return await _userManager.FindByEmailAsync(email);
+    }
+
+    //TODO remove getUserProps and corresponding class and add members
+    public async Task<Model.Entity.User?> GetUserById(long userId, GetUserProps? getUserProps = null)
+    {
+        var query = _userManager.Users.AsNoTracking();
+
+        if (getUserProps != null && getUserProps.LoadSenderChatMessages)
+        {
+            query = query.Include(u => u.SentChatMessages);
+        }
+
+        if (getUserProps != null && getUserProps.LoadReceiverChatMessages)
+        {
+            query = query.Include(u => u.ReceivedChatMessages);
+        }
+
+        return await query.SingleOrDefaultAsync(u => u.Id == userId);
     }
 }

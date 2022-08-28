@@ -21,16 +21,23 @@ public class AuthenticationController : ControllerBase
     public async Task<OkObjectResult> SignUpRequest([FromBody] SignupRequestDto body)
     {
         var result = await _authenticationService.SignupRequest(body.Email);
-        
         return Ok(new { id = result.Id });
     }
 
     [HttpPost("SignUp/ConfirmVerificationCode")]
-    public async Task<OkObjectResult> SignUpConfirmVerificationCode(
+    public async Task<ActionResult<AuthenticationPayloadDto>> SignUpConfirmVerificationCode(
         [FromBody] SignUpConfirmVerificationCodeDto body
     )
     {
         var result = await _authenticationService.SignUpConfirmVerificationCode(body);
+        return Ok(result);
+    }
+    
+    //TODO internal error on sending wrong email ???
+    [HttpPost("SignIn")]
+    public async Task<ActionResult<AuthenticationPayloadDto>> SignIn([FromBody] SignInDto body)
+    {
+        var result = await _authenticationService.SignIn(body.Email, body.Password);
         return Ok(result);
     }
 }

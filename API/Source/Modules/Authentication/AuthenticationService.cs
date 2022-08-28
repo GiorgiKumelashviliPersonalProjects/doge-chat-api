@@ -8,11 +8,13 @@ using API.Source.Model.Common;
 using API.Source.Modules.Authentication.Dto;
 using API.Source.Modules.Authentication.Interfaces;
 using API.Source.Modules.User.Interfaces;
+using Microsoft.AspNetCore.Identity;
 
 namespace API.Source.Modules.Authentication;
 
 public class AuthenticationService : IAuthenticationService
 {
+    private readonly SignInManager<Model.Entity.User> _signInManager;
     private readonly IRequestSignupService _requestSignupService;
     private readonly IUserService _userService;
     private readonly IEmailClient _emailClient;
@@ -20,6 +22,7 @@ public class AuthenticationService : IAuthenticationService
     private readonly IJwtTokenService _jwtTokenService;
 
     public AuthenticationService(
+        SignInManager<Model.Entity.User> signInManager,
         IRequestSignupService requestSignupService,
         IUserService userService,
         IEmailClient emailClient,
@@ -27,6 +30,7 @@ public class AuthenticationService : IAuthenticationService
         IJwtTokenService jwtTokenService
     )
     {
+        _signInManager = signInManager;
         _requestSignupService = requestSignupService;
         _userService = userService;
         _emailClient = emailClient;
@@ -53,6 +57,7 @@ public class AuthenticationService : IAuthenticationService
 
     public async Task<AuthenticationPayloadDto> SignUpConfirmVerificationCode(SignUpConfirmVerificationCodeDto body)
     {
+        //todo must find with email as well (if everything is correct then id can be different which is security issue)
         var requestSignupById = await _requestSignupService.GetRequestSignupById(body.Id);
 
         // validate existence
@@ -86,6 +91,29 @@ public class AuthenticationService : IAuthenticationService
         
         // delete request sign up
         await _requestSignupService.DeleteRequestSignUpById(requestSignupById.Id);
+
+        return new AuthenticationPayloadDto
+        {
+            AccessToken = accessToken,
+            RefreshToken = refreshToken
+        };
+    }
+
+    public async Task<AuthenticationPayloadDto> SignIn(string email, string password)
+    {
+        var user = await _userService.GetUserByEmail(email);
+        var signInResult = await _signInManager.CheckPasswordSignInAsync(user, password, false);
+        
+        if (!signInResult.Succeeded)
+        {
+            throw new UnauthorizedException(ExceptionMessageCode.InvalidEmailOrPassword);
+        }
+
+        var tokenPayload = new AuthenticationTokenPayload(user.Email, user.Id);
+        var accessToken = _jwtTokenService.GenerateAccessToken(tokenPayload);
+        var refreshToken = _jwtTokenService.GenerateRefreshToken(tokenPayload);
+
+        await _userService.AddRefreshTokenByUserId(user.Id, refreshToken);
 
         return new AuthenticationPayloadDto
         {
