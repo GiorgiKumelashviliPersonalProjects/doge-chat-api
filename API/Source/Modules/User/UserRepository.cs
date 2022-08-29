@@ -1,9 +1,6 @@
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using API.Source.Exception.Http;
 using API.Source.Exception.Validation;
 using API.Source.Model.Enum;
-using API.Source.Modules.User.Common;
 using API.Source.Modules.User.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -70,17 +67,20 @@ public class UserRepository : IUserRepository
         return await _userManager.FindByEmailAsync(email);
     }
 
-    //TODO remove getUserProps and corresponding class and add members
-    public async Task<Model.Entity.User?> GetUserById(long userId, GetUserProps? getUserProps = null)
+    public async Task<Model.Entity.User?> GetUserById(
+        long userId,
+        bool? loadSenderChatMessages = null,
+        bool? loadReceiverChatMessages = null
+    )
     {
         var query = _userManager.Users.AsNoTracking();
 
-        if (getUserProps != null && getUserProps.LoadSenderChatMessages)
+        if (loadSenderChatMessages is true)
         {
             query = query.Include(u => u.SentChatMessages);
         }
 
-        if (getUserProps != null && getUserProps.LoadReceiverChatMessages)
+        if (loadReceiverChatMessages is true)
         {
             query = query.Include(u => u.ReceivedChatMessages);
         }

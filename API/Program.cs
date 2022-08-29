@@ -12,9 +12,11 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.SwaggerUI;
 
+//================================================
 //TODO permission and roles
 //TODO date time problem needs solving
-//todo remove some unnecessary fields from user like password
+//================================================
+
 // for date in postgres
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
@@ -33,6 +35,7 @@ builder.Services
     .AddChatMessageModule()
     .AddAuthenticationModule(builder.Configuration)
     .AddUserModule()
+    .AddAutoMapper(typeof(AutoMapperProfileConfig).Assembly)
     .AddEndpointsApiExplorer()
     .AddControllers(o => o.Filters.Add(new AuthorizeFilter(authorizationPolicy)))
     .AddNewtonsoftJson(o =>
@@ -41,6 +44,7 @@ builder.Services
         o.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
     });
 
+// builder.Services.AddAutoMapper();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

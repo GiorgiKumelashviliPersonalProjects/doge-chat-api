@@ -34,8 +34,8 @@ public class ChatMessageService : IChatMessageService
 
         var newChatMessage = await _chatMessageRepository.CreateChatMessage(
             userId: userId,
-            receiverUserId:receiverUser.Id,
-            message:sendChatMessageDto.Message
+            receiverUserId: receiverUser.Id,
+            message: sendChatMessageDto.Message
         );
     }
 }

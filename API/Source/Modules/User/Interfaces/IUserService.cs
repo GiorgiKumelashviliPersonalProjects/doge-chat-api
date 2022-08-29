@@ -1,5 +1,5 @@
 using API.Source.Model.Enum;
-using API.Source.Modules.User.Common;
+using API.Source.Modules.User.Dto;
 
 namespace API.Source.Modules.User.Interfaces;
 
@@ -7,8 +7,10 @@ public interface IUserService
 {
     Task<bool> CheckIfEmailExists(string email);
 
-    Task<Model.Entity.User?> GetUserById(long userId, GetUserProps? getUserProps = null);
-    
+    Task<GetUserDto> GetUserById(long userId,
+        bool? loadSenderChatMessages = null,
+        bool? loadReceiverChatMessages = null);
+
     Task<Model.Entity.User?> GetUserByEmail(string email);
 
     Task<Model.Entity.User> CreateUser(

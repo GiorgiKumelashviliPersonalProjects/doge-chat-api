@@ -1,7 +1,8 @@
 using API.Source.Model.Enum;
-using API.Source.Modules.User.Common;
+using API.Source.Modules.User.Dto;
 using API.Source.Modules.User.Interfaces;
 using API.Source.Modules.User.RefreshToken;
+using AutoMapper;
 
 namespace API.Source.Modules.User;
 
@@ -9,11 +10,17 @@ public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
     private readonly IRefreshTokenRepository _refreshTokenRepository;
+    private readonly IMapper _mapper;
 
-    public UserService(IUserRepository userRepository, IRefreshTokenRepository refreshTokenRepository)
+    public UserService(
+        IUserRepository userRepository,
+        IRefreshTokenRepository refreshTokenRepository,
+        IMapper mapper
+    )
     {
         _userRepository = userRepository;
         _refreshTokenRepository = refreshTokenRepository;
+        _mapper = mapper;
     }
 
     public async Task<bool> CheckIfEmailExists(string email)
@@ -21,10 +28,19 @@ public class UserService : IUserService
         return await _userRepository.CheckUserByEmail(email);
     }
 
-    public Task<Model.Entity.User?> GetUserById(long userId, GetUserProps? getUserProps = null)
+    public async Task<GetUserDto> GetUserById(long userId,
+        bool? loadSenderChatMessages = null,
+        bool? loadReceiverChatMessages = null)
     {
-        return _userRepository.GetUserById(userId, getUserProps);
+        var result = await _userRepository.GetUserById(
+            userId: userId,
+            loadSenderChatMessages: loadSenderChatMessages,
+            loadReceiverChatMessages: loadReceiverChatMessages
+        );
+
+        return _mapper.Map<GetUserDto>(result);
     }
+
 
     public Task<Model.Entity.User?> GetUserByEmail(string email)
     {
