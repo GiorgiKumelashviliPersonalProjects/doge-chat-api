@@ -1,4 +1,4 @@
-using API.Source.Model;
+using API.Source.Config;
 using API.Source.Model.Projection;
 using Microsoft.EntityFrameworkCore;
 
@@ -52,7 +52,7 @@ public class RefreshTokenRepository : IRefreshTokenRepository
             .RefreshTokens
             .Where(rt => rt.Value == value)
             .SingleOrDefaultAsync();
-        
+
         if (entity is null)
         {
             return;

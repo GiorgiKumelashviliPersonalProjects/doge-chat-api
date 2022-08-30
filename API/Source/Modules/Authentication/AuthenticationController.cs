@@ -32,7 +32,7 @@ public class AuthenticationController : ControllerBase
         var result = await _authenticationService.SignUpConfirmVerificationCode(body);
         return Ok(result);
     }
-    
+
     //TODO internal error on sending wrong email ???
     [HttpPost("SignIn")]
     public async Task<ActionResult<AuthenticationPayloadDto>> SignIn([FromBody] SignInDto body)
@@ -40,7 +40,7 @@ public class AuthenticationController : ControllerBase
         var result = await _authenticationService.SignIn(body.Email, body.Password);
         return Ok(result);
     }
-    
+
     [HttpPost("Refresh")]
     public async Task<ActionResult<AuthenticationPayloadDto>> Refresh([FromBody] RefreshTokenDto body)
     {

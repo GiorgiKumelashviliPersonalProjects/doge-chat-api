@@ -88,7 +88,7 @@ public class AuthenticationService : IAuthenticationService
         var refreshToken = _jwtTokenService.GenerateRefreshToken(tokenPayload);
 
         await _userService.AddRefreshTokenByUserId(user.Id, refreshToken);
-        
+
         // delete request sign up
         await _requestSignupService.DeleteRequestSignUpById(requestSignupById.Id);
 
@@ -107,9 +107,9 @@ public class AuthenticationService : IAuthenticationService
         {
             throw new NotFoundException("User with given email doesn't exist");
         }
-        
+
         var signInResult = await _signInManager.CheckPasswordSignInAsync(user, password, false);
-        
+
         if (!signInResult.Succeeded)
         {
             throw new UnauthorizedException(ExceptionMessageCode.InvalidEmailOrPassword);
@@ -131,11 +131,11 @@ public class AuthenticationService : IAuthenticationService
     public async Task<AuthenticationPayloadDto> Refresh(string refreshToken)
     {
         var userIdEmail = await _userService.GetUserIdByRefreshToken(refreshToken);
-        
+
         if (userIdEmail is null)
         {
             var decodedPayload = _jwtTokenService.DecodeToken(refreshToken);
-            
+
             if (decodedPayload is null)
             {
                 throw new ForbiddenException(ExceptionMessageCode.RefreshTokenReuse);

@@ -6,20 +6,13 @@ namespace API.Source.Model.Entity;
 public class User : IdentityUser<long>
 {
     public string FirstName { get; set; }
-
     public string LastName { get; set; }
-
     public DateTime BirthDate { get; set; }
-
     public Gender Gender { get; set; }
-
     public bool IsOnline { get; set; }
-    
     public ICollection<UserRole> UserRoles { get; set; }
-
-    public DateTime UpdatedAt { get; set; }
-    public DateTime CreatedAt { get; set; }
-    
     public List<ChatMessage>? SentChatMessages { get; set; }
     public List<ChatMessage>? ReceivedChatMessages { get; set; }
+    public DateTime UpdatedAt { get; set; }
+    public DateTime CreatedAt { get; set; }
 }

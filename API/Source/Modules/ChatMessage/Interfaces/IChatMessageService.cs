@@ -1,4 +1,4 @@
-using API.Source.Modules.Chat.Dto;
+using API.Source.Modules.ChatMessage.Dto;
 
 namespace API.Source.Modules.ChatMessage.Interfaces;
 

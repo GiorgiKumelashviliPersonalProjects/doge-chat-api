@@ -1,7 +1,6 @@
 using API.Source.Exception.Http;
 using API.Source.Exception.Validation;
 using API.Source.Model.Enum;
-using API.Source.Modules.User.Dto;
 using API.Source.Modules.User.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -60,7 +59,7 @@ public class UserRepository : IUserRepository
 
         if (errors.Count > 0)
         {
-            throw new ValidationException(errors[0].Description);
+            throw new BadRequestException(errors[0].Description);
         }
 
         // log error

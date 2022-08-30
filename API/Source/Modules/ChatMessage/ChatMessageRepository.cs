@@ -1,4 +1,4 @@
-using API.Source.Model;
+using API.Source.Config;
 using API.Source.Modules.ChatMessage.Interfaces;
 
 namespace API.Source.Modules.ChatMessage;

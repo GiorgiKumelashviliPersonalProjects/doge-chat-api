@@ -13,6 +13,7 @@ public interface IUserService
         bool? loadSenderChatMessages = null,
         bool? loadReceiverChatMessages = null
     );
+
     Task<List<UserDto>> GetUsers();
 
     Task<Model.Entity.User?> GetUserByEmail(string email);

@@ -19,7 +19,7 @@ public static class SwaggerConfig
                     Scheme = "Bearer",
                     BearerFormat = "JWT"
                 });
-                
+
                 options.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
                     {

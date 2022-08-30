@@ -6,7 +6,7 @@ using Newtonsoft.Json.Serialization;
 
 namespace API.Source.Middleware;
 
-public class ExceptionMiddleware: IMiddleware
+public class ExceptionMiddleware : IMiddleware
 {
     private readonly ILogger<ExceptionMiddleware> _logger;
 
@@ -25,7 +25,7 @@ public class ExceptionMiddleware: IMiddleware
         {
             if (e is not GenericException && e.InnerException is not null)
             {
-                while (e.InnerException is not  null)
+                while (e.InnerException is not null)
                 {
                     e = e.InnerException;
                 }
@@ -33,9 +33,9 @@ public class ExceptionMiddleware: IMiddleware
 
             const string message = "_____________________{Message}_____________________\n{Trace}";
             var response = context.Response;
-            
+
             _logger.LogInformation(message, e.Message, e.StackTrace);
-            
+
             if (!response.HasStarted)
             {
                 var resolvedException = e as GenericException ?? new InternalServerException();
@@ -58,7 +58,10 @@ public class ExceptionMiddleware: IMiddleware
                     )
                 );
             }
-            else { _logger.LogWarning("Can't write error response. Response has already started"); }
+            else
+            {
+                _logger.LogWarning("Can't write error response. Response has already started");
+            }
         }
     }
 }

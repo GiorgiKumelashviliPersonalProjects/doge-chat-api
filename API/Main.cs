@@ -1,7 +1,6 @@
 using API.Source.Common;
 using API.Source.Config;
 using API.Source.Middleware;
-using API.Source.Model;
 using API.Source.Modules.Authentication;
 using API.Source.Modules.ChatMessage;
 using API.Source.Modules.User;
@@ -14,16 +13,15 @@ using Swashbuckle.AspNetCore.SwaggerUI;
 
 //================================================
 //TODO permission and roles
-//TODO date time problem needs solving
 //TODO add online status updates via socket connect and disconnect
 //================================================
-
-// for date in postgres
-AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("Postgresql");
 var authorizationPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+
+// for date in postgres
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 // Add services to the container.
 builder.Services

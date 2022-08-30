@@ -1,4 +1,4 @@
-using API.Source.Model;
+using API.Source.Config;
 using API.Source.Modules.Authentication.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,7 +12,7 @@ public class RequestSignupRepository : IRequestSignupRepository
     {
         _dataContext = dataContext;
     }
-    
+
     public async Task ClearAllByEmail(string email)
     {
         var requestSignups = await _dataContext
@@ -65,7 +65,7 @@ public class RequestSignupRepository : IRequestSignupRepository
     )
     {
         var signUpRequest = await _dataContext.RequestSignups.SingleOrDefaultAsync(request => request.Id == id);
-        
+
         if (signUpRequest is null)
         {
             return null;

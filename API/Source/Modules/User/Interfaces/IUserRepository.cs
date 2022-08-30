@@ -1,5 +1,4 @@
 using API.Source.Model.Enum;
-using API.Source.Modules.User.Dto;
 
 namespace API.Source.Modules.User.Interfaces;
 
@@ -14,7 +13,7 @@ public interface IUserRepository
         bool? loadSenderChatMessages = null,
         bool? loadReceiverChatMessages = null
     );
-    
+
     Task<List<Model.Entity.User>> GetUsers();
 
     Task<Model.Entity.User> CreateEntity(string firstName,

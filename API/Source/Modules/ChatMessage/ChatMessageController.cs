@@ -1,5 +1,5 @@
 using API.Source.Extension;
-using API.Source.Modules.Chat.Dto;
+using API.Source.Modules.ChatMessage.Dto;
 using API.Source.Modules.ChatMessage.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,17 +15,17 @@ public class ChatMessageController : ControllerBase
     {
         _messageService = messageService;
     }
-    
+
     [HttpPost("send")]
     public async Task<dynamic> SendMessage([FromBody] SendChatMessageDto sendChatMessageDto)
     {
         var userId = User.GetUserId();
-        
+
         // validate and save in database
         await _messageService.SaveMessage(userId, sendChatMessageDto);
-        
+
         //TODO notify receiver through socket
-        
+
         return Ok(new { message = "Message sent successfully" });
     }
 }

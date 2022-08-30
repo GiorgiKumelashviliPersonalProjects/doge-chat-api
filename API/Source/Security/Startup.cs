@@ -1,4 +1,4 @@
-using API.Source.Model;
+using API.Source.Config;
 using API.Source.Model.Entity;
 using Microsoft.AspNetCore.Identity;
 
@@ -14,7 +14,7 @@ public static class Startup
 //     public override IdentityError PasswordRequiresLower() { return new IdentityError { Code = nameof(PasswordRequiresLower), Description = "Passwords must have at least one lowercase ('a'-'z')." }; }
 //     public override IdentityError PasswordRequiresUpper() { return new IdentityError { Code = nameof(PasswordRequiresUpper), Description = "Passwords must have at least one uppercase ('A'-'Z')." }; }
 // }
-    
+
     public static IServiceCollection AddSecurityModule(this IServiceCollection serviceCollection)
     {
         // authorize policy missing
@@ -35,8 +35,8 @@ public static class Startup
             .AddSignInManager<SignInManager<User>>()
             .AddRoleValidator<RoleValidator<Role>>()
             .AddEntityFrameworkStores<DataContext>();
-        
-            // .AddErrorDescriber<CustomIdentityErrorDescriber>();
+
+        // .AddErrorDescriber<CustomIdentityErrorDescriber>();
         return serviceCollection;
     }
 }

@@ -15,7 +15,7 @@ public class UserController : ControllerBase
     {
         _userService = userService;
     }
-    
+
     [HttpGet]
     public async Task<GetUserDto> GetUser()
     {

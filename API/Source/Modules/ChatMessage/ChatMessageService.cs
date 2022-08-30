@@ -1,6 +1,6 @@
 using API.Source.Exception.Http;
 using API.Source.Exception.Validation;
-using API.Source.Modules.Chat.Dto;
+using API.Source.Modules.ChatMessage.Dto;
 using API.Source.Modules.ChatMessage.Interfaces;
 using API.Source.Modules.User.Interfaces;
 
@@ -24,7 +24,7 @@ public class ChatMessageService : IChatMessageService
 
         if (sendChatMessageDto.UserId == userId)
         {
-            throw new ValidationException("You are sending to yourself bruh");
+            throw new BadRequestException("You are sending to yourself bruh");
         }
 
         if (receiverUser is null)

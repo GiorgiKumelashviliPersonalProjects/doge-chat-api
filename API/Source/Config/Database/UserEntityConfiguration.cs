@@ -2,7 +2,7 @@ using API.Source.Model.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace API.Source.Model.DatabaseConfig;
+namespace API.Source.Config.Database;
 
 public class UserEntityConfiguration : IEntityTypeConfiguration<User>
 {
@@ -39,17 +39,17 @@ public class UserEntityConfiguration : IEntityTypeConfiguration<User>
             .Property(entity => entity.UserName)
             .IsRequired()
             .HasMaxLength(MaxLength);
-        
+
         builder
             .Property(entity => entity.CreatedAt)
             .HasDefaultValueSql("NOW()")
             .ValueGeneratedOnAdd();
-        
+
         builder
             .Property(entity => entity.UpdatedAt)
             .HasDefaultValueSql("NOW()")
             .ValueGeneratedOnAddOrUpdate();
-        
+
         builder.ToTable("Users");
     }
 }
