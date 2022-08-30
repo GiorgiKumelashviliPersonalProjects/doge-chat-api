@@ -15,6 +15,7 @@ using Swashbuckle.AspNetCore.SwaggerUI;
 //================================================
 //TODO permission and roles
 //TODO date time problem needs solving
+//TODO add online status updates via socket connect and disconnect
 //================================================
 
 // for date in postgres

@@ -26,7 +26,7 @@ public class RefreshTokenRepository : IRefreshTokenRepository
         await _dataContext.SaveChangesAsync();
     }
 
-    public async Task<UserIdEmailProjection?> GetUserIdByValue(string refreshToken)
+    public async Task<UserIdEmailProjection?> GetUserIdByRefreshToken(string refreshToken)
     {
         return await _dataContext.RefreshTokens
             .Where(rt => rt.Value == refreshToken)

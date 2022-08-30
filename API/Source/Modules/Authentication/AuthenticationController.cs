@@ -40,4 +40,11 @@ public class AuthenticationController : ControllerBase
         var result = await _authenticationService.SignIn(body.Email, body.Password);
         return Ok(result);
     }
+    
+    [HttpPost("Refresh")]
+    public async Task<ActionResult<AuthenticationPayloadDto>> Refresh([FromBody] RefreshTokenDto body)
+    {
+        var result = await _authenticationService.Refresh(body.RefreshToken);
+        return Ok(result);
+    }
 }

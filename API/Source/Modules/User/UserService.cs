@@ -1,4 +1,5 @@
 using API.Source.Model.Enum;
+using API.Source.Model.Projection;
 using API.Source.Modules.User.Dto;
 using API.Source.Modules.User.Interfaces;
 using API.Source.Modules.User.RefreshToken;
@@ -41,6 +42,12 @@ public class UserService : IUserService
         return _mapper.Map<GetUserDto>(result);
     }
 
+    public async Task<List<UserDto>> GetUsers()
+    {
+        var users = await _userRepository.GetUsers();
+        return _mapper.Map<List<UserDto>>(users);
+    }
+
 
     public Task<Model.Entity.User?> GetUserByEmail(string email)
     {
@@ -63,5 +70,20 @@ public class UserService : IUserService
     public async Task AddRefreshTokenByUserId(long userId, string refreshToken)
     {
         await _refreshTokenRepository.AddRefreshTokenByUserId(userId, refreshToken);
+    }
+
+    public Task<UserIdEmailProjection?> GetUserIdByRefreshToken(string refreshToken)
+    {
+        return _refreshTokenRepository.GetUserIdByRefreshToken(refreshToken);
+    }
+
+    public async Task ClearRefreshTokensByUserId(long decodedPayloadUserId)
+    {
+        await _refreshTokenRepository.DeleteAllByUserId(decodedPayloadUserId);
+    }
+
+    public async Task DeleteRefreshToken(string refreshToken)
+    {
+        await _refreshTokenRepository.DeleteByValue(refreshToken);
     }
 }

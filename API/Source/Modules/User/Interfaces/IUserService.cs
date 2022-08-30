@@ -1,4 +1,5 @@
 using API.Source.Model.Enum;
+using API.Source.Model.Projection;
 using API.Source.Modules.User.Dto;
 
 namespace API.Source.Modules.User.Interfaces;
@@ -7,9 +8,12 @@ public interface IUserService
 {
     Task<bool> CheckIfEmailExists(string email);
 
-    Task<GetUserDto> GetUserById(long userId,
+    Task<GetUserDto> GetUserById(
+        long userId,
         bool? loadSenderChatMessages = null,
-        bool? loadReceiverChatMessages = null);
+        bool? loadReceiverChatMessages = null
+    );
+    Task<List<UserDto>> GetUsers();
 
     Task<Model.Entity.User?> GetUserByEmail(string email);
 
@@ -24,4 +28,7 @@ public interface IUserService
     );
 
     Task AddRefreshTokenByUserId(long userId, string refreshToken);
+    Task<UserIdEmailProjection?> GetUserIdByRefreshToken(string refreshToken);
+    Task ClearRefreshTokensByUserId(long decodedPayloadUserId);
+    Task DeleteRefreshToken(string refreshToken);
 }

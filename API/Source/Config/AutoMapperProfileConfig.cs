@@ -9,6 +9,7 @@ public class AutoMapperProfileConfig : Profile
     public AutoMapperProfileConfig()
     {
         CreateMap<User, GetUserDto>();
+        CreateMap<User, UserDto>();
         CreateMap<ChatMessage, GetUserChatMessageDto>();
     }
 }

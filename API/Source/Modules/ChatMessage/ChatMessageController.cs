@@ -15,7 +15,7 @@ public class ChatMessageController : ControllerBase
     {
         _messageService = messageService;
     }
-
+    
     [HttpPost("send")]
     public async Task<dynamic> SendMessage([FromBody] SendChatMessageDto sendChatMessageDto)
     {
@@ -23,6 +23,8 @@ public class ChatMessageController : ControllerBase
         
         // validate and save in database
         await _messageService.SaveMessage(userId, sendChatMessageDto);
+        
+        //TODO notify receiver through socket
         
         return Ok(new { message = "Message sent successfully" });
     }

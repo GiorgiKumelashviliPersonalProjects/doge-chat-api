@@ -1,6 +1,7 @@
 using API.Source.Exception.Http;
 using API.Source.Exception.Validation;
 using API.Source.Model.Enum;
+using API.Source.Modules.User.Dto;
 using API.Source.Modules.User.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +22,11 @@ public class UserRepository : IUserRepository
     public Task<bool> CheckUserByEmail(string email)
     {
         return _userManager.Users.AnyAsync(user => user.Email.Equals(email));
+    }
+
+    public async Task<List<Model.Entity.User>> GetUsers()
+    {
+        return await _userManager.Users.ToListAsync();
     }
 
     public async Task<Model.Entity.User> CreateEntity(

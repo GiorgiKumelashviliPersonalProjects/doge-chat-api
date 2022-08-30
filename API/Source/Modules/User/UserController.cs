@@ -15,7 +15,7 @@ public class UserController : ControllerBase
     {
         _userService = userService;
     }
-
+    
     [HttpGet]
     public async Task<GetUserDto> GetUser()
     {
@@ -26,5 +26,11 @@ public class UserController : ControllerBase
             loadSenderChatMessages: true,
             loadReceiverChatMessages: true
         );
+    }
+
+    [HttpGet("all")]
+    public Task<List<UserDto>> GetUsers()
+    {
+        return _userService.GetUsers();
     }
 }
