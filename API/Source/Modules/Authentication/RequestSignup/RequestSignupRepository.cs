@@ -39,9 +39,14 @@ public class RequestSignupRepository : IRequestSignupRepository
         return requestSignup;
     }
 
-    public Task<Model.Entity.RequestSignup?> GetById(int id)
+    public async Task<Model.Entity.RequestSignup?> GetByIdAndEmail(int id, string email)
     {
-        return _dataContext.RequestSignups.SingleOrDefaultAsync(r => r.Id.Equals(id));
+        return await _dataContext
+            .RequestSignups
+            .AsNoTracking()
+            .Where(r => r.Email.Equals(email))
+            .Where(r => r.Id.Equals(id))
+            .SingleOrDefaultAsync();
     }
 
     public async Task DeleteById(long id)
@@ -55,27 +60,27 @@ public class RequestSignupRepository : IRequestSignupRepository
             await _dataContext.SaveChangesAsync();
         }
     }
-
-    public async Task<Model.Entity.RequestSignup?> UpdateById(
-        long id,
-        string? email = null,
-        string? code = null,
-        bool? isVerified = null,
-        string? uuid = null
-    )
-    {
-        var signUpRequest = await _dataContext.RequestSignups.SingleOrDefaultAsync(request => request.Id == id);
-
-        if (signUpRequest is null)
-        {
-            return null;
-        }
-
-        if (email is not null) signUpRequest.Email = email;
-        if (code is not null) signUpRequest.Code = code;
-
-        await _dataContext.SaveChangesAsync();
-
-        return signUpRequest;
-    }
 }
+
+// public async Task<Model.Entity.RequestSignup?> UpdateById(
+//     long id,
+//     string? email = null,
+//     string? code = null,
+//     bool? isVerified = null,
+//     string? uuid = null
+// )
+// {
+//     var signUpRequest = await _dataContext.RequestSignups.SingleOrDefaultAsync(request => request.Id == id);
+//
+//     if (signUpRequest is null)
+//     {
+//         return null;
+//     }
+//
+//     if (email is not null) signUpRequest.Email = email;
+//     if (code is not null) signUpRequest.Code = code;
+//
+//     await _dataContext.SaveChangesAsync();
+//
+//     return signUpRequest;
+// }

@@ -57,8 +57,7 @@ public class AuthenticationService : IAuthenticationService
 
     public async Task<AuthenticationPayloadDto> SignUpConfirmVerificationCode(SignUpConfirmVerificationCodeDto body)
     {
-        //todo must find with email as well (if everything is correct then id can be different which is security issue)
-        var requestSignupById = await _requestSignupService.GetRequestSignupById(body.Id);
+        var requestSignupById = await _requestSignupService.GetRequestSignupByIdAndEmail(body.Id, body.Email);
 
         // validate existence
         if (requestSignupById is null)

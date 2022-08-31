@@ -33,7 +33,6 @@ public class AuthenticationController : ControllerBase
         return Ok(result);
     }
 
-    //TODO internal error on sending wrong email ???
     [HttpPost("SignIn")]
     public async Task<ActionResult<AuthenticationPayloadDto>> SignIn([FromBody] SignInDto body)
     {

@@ -20,9 +20,9 @@ public class RequestSignupService : IRequestSignupService
         return await _requestSignupRepository.CreateEntity(email, code);
     }
 
-    public Task<Model.Entity.RequestSignup?> GetRequestSignupById(int id)
+    public Task<Model.Entity.RequestSignup?> GetRequestSignupByIdAndEmail(int id, string email)
     {
-        return _requestSignupRepository.GetById(id);
+        return _requestSignupRepository.GetByIdAndEmail(id, email);
     }
 
     public Task DeleteRequestSignUpById(long id)
