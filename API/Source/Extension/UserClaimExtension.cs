@@ -5,9 +5,9 @@ namespace API.Source.Extension;
 
 public static class UserClaimExtension
 {
-    public static long GetUserId(this ClaimsPrincipal claimsPrincipal)
+    public static long GetUserId(this ClaimsPrincipal? claimsPrincipal)
     {
-        var claim = claimsPrincipal.Claims.FirstOrDefault(claim => claim.Type == AppClaimType.UserId);
+        var claim = claimsPrincipal?.Claims.FirstOrDefault(claim => claim.Type == AppClaimType.UserId);
 
         if (claim is null)
         {
@@ -20,5 +20,18 @@ public static class UserClaimExtension
         }
 
         return userId;
+    }
+
+    public static string GetUsername(this ClaimsPrincipal? claimsPrincipal)
+    {
+        var claim = claimsPrincipal?.Claims.FirstOrDefault(claim => claim.Type == AppClaimType.UserId);
+        var username = claim?.Value;
+        
+        if (username is null)
+        {
+            throw new System.Exception("Could not find claim " + AppClaimType.Username);
+        }
+
+        return username;
     }
 }

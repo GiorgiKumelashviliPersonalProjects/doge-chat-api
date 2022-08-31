@@ -5,7 +5,30 @@ using API.Source.Model.Enum;
 namespace API.Source.Modules.Authentication.Dto;
 
 public class SignUpConfirmVerificationCodeDto
-{ 
+{
+    public SignUpConfirmVerificationCodeDto(
+        int id,
+        string code,
+        string username,
+        string firstName,
+        string lastName,
+        string password,
+        string email,
+        Gender gender,
+        DateTime birthDate
+    )
+    {
+        Id = id;
+        Code = code;
+        Username = username;
+        FirstName = firstName;
+        LastName = lastName;
+        Password = password;
+        Gender = gender;
+        BirthDate = birthDate;
+        Email = email;
+    }
+
     public int Id { get; }
 
     [StringLength(5)] public string Code { get; }

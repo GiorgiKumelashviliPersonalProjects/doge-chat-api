@@ -5,6 +5,7 @@ using API.Source.Modules.Authentication;
 using API.Source.Modules.ChatMessage;
 using API.Source.Modules.User;
 using API.Source.Security;
+using API.Source.SignalR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -26,14 +27,15 @@ AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 // Add services to the container.
 builder.Services
     .AddCors()
-    .AddSwaggerModule()
     .AddScoped<ExceptionMiddleware>()
     .AddDbContext<DataContext>(o => o.UseNpgsql(connectionString))
+    .AddSwaggerModule()
     .AddSecurityModule()
     .AddCommonModule()
     .AddChatMessageModule()
     .AddAuthenticationModule(builder.Configuration)
     .AddUserModule()
+    .AddSignalRModule()
     .AddAutoMapper(typeof(AutoMapperProfileConfig).Assembly)
     .AddEndpointsApiExplorer()
     .AddControllers(o => o.Filters.Add(new AuthorizeFilter(authorizationPolicy)))
@@ -74,4 +76,5 @@ if (!app.Environment.IsDevelopment())
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.MapHub<MainHub>("hubs/main");
 app.Run();

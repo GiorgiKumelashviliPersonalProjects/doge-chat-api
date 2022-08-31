@@ -82,7 +82,7 @@ public class AuthenticationService : IAuthenticationService
             password: body.Password
         );
 
-        var tokenPayload = new AuthenticationTokenPayload(user.Email, user.Id);
+        var tokenPayload = new AuthenticationTokenPayload(user.Email, user.Id, user.UserName);
         var accessToken = _jwtTokenService.GenerateAccessToken(tokenPayload);
         var refreshToken = _jwtTokenService.GenerateRefreshToken(tokenPayload);
 
@@ -114,7 +114,7 @@ public class AuthenticationService : IAuthenticationService
             throw new UnauthorizedException(ExceptionMessageCode.InvalidEmailOrPassword);
         }
 
-        var tokenPayload = new AuthenticationTokenPayload(user.Email, user.Id);
+        var tokenPayload = new AuthenticationTokenPayload(user.Email, user.Id, user.UserName);
         var accessToken = _jwtTokenService.GenerateAccessToken(tokenPayload);
         var refreshToken = _jwtTokenService.GenerateRefreshToken(tokenPayload);
 
@@ -144,7 +144,7 @@ public class AuthenticationService : IAuthenticationService
             throw new ForbiddenException(ExceptionMessageCode.RefreshTokenReuse);
         }
 
-        var tokenPayload = new AuthenticationTokenPayload(userIdEmail.Email, userIdEmail.UserId);
+        var tokenPayload = new AuthenticationTokenPayload(userIdEmail.Email, userIdEmail.UserId, userIdEmail.Username);
         var newAccessToken = _jwtTokenService.GenerateAccessToken(tokenPayload);
         var newRefreshToken = _jwtTokenService.GenerateAccessToken(tokenPayload);
 

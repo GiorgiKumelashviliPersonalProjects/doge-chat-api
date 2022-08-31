@@ -31,7 +31,12 @@ public class RefreshTokenRepository : IRefreshTokenRepository
         return await _dataContext.RefreshTokens
             .Where(rt => rt.Value == refreshToken)
             .Include(rt => rt.User)
-            .Select(rt => new UserIdEmailProjection { UserId = rt.UserId, Email = rt.User.Email })
+            .Select(rt => new UserIdEmailProjection
+            {
+                UserId = rt.UserId,
+                Email = rt.User.Email,
+                Username = rt.User.UserName
+            })
             .FirstOrDefaultAsync();
     }
 

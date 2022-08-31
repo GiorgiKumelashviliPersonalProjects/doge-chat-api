@@ -61,6 +61,7 @@ public class JwtTokenService : IJwtTokenService
         {
             new(AppClaimType.Email, payload.Email),
             new(AppClaimType.UserId, payload.UserId.ToString()),
+            new(AppClaimType.Username, payload.Username),
         };
 
         var tokenDescriptor = new SecurityTokenDescriptor
@@ -86,6 +87,7 @@ public class JwtTokenService : IJwtTokenService
         var jwtSecurityToken = handler.ReadJwtToken(token);
 
         var emailClaim = jwtSecurityToken.Claims.FirstOrDefault(claim => claim.Type == AppClaimType.Email);
+        var usernameClaim = jwtSecurityToken.Claims.FirstOrDefault(claim => claim.Type == AppClaimType.Username);
         var userIdClaim = jwtSecurityToken.Claims.FirstOrDefault(claim => claim.Type == AppClaimType.UserId);
 
         if (emailClaim is null || userIdClaim is null)
@@ -93,9 +95,12 @@ public class JwtTokenService : IJwtTokenService
             return null;
         }
 
-        return !long.TryParse(userIdClaim.Value, out var userId)
-            ? null
-            : new AuthenticationTokenPayload(emailClaim.Value, userId);
+        if (usernameClaim != null)
+            return !long.TryParse(userIdClaim.Value, out var userId)
+                ? null
+                : new AuthenticationTokenPayload(emailClaim.Value, userId, usernameClaim.Value);
+
+        return null;
     }
 
     public bool ValidateRefreshToken(string token)
