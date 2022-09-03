@@ -1,5 +1,6 @@
 using API.Source.Config;
 using API.Source.Modules.ChatMessage.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Source.Modules.ChatMessage;
 
@@ -25,5 +26,13 @@ public class ChatMessageRepository : IChatMessageRepository
         await _dataContext.SaveChangesAsync();
 
         return newChatMessage;
+    }
+
+    public async Task<List<Model.Entity.ChatMessage>> GetMessages(long userId, long receiverId)
+    {
+        return await _dataContext
+            .ChatMessages
+            .Where(e => e.SenderId == userId && e.ReceiverId == receiverId)
+            .ToListAsync();
     }
 }

@@ -29,7 +29,7 @@ public class UserService : IUserService
         return await _userRepository.CheckUserByEmail(email);
     }
 
-    public async Task<GetUserDto> GetUserById(long userId,
+    public async Task<GetUserDto?> GetUserById(long userId,
         bool? loadSenderChatMessages = null,
         bool? loadReceiverChatMessages = null)
     {
@@ -39,7 +39,7 @@ public class UserService : IUserService
             loadReceiverChatMessages: loadReceiverChatMessages
         );
 
-        return _mapper.Map<GetUserDto>(result);
+        return result is null ? null : _mapper.Map<GetUserDto>(result);
     }
 
     public async Task<List<UserDto>> GetUsers()

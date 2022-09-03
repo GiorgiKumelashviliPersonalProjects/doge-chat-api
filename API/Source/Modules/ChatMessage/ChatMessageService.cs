@@ -2,6 +2,7 @@ using API.Source.Exception.Http;
 using API.Source.Exception.Validation;
 using API.Source.Modules.ChatMessage.Dto;
 using API.Source.Modules.ChatMessage.Interfaces;
+using API.Source.Modules.User.Dto;
 using API.Source.Modules.User.Interfaces;
 
 namespace API.Source.Modules.ChatMessage;
@@ -16,8 +17,14 @@ public class ChatMessageService : IChatMessageService
         _chatMessageRepository = chatMessageRepository;
         _userService = userService;
     }
+    
+    public class SaveMessageResponse
+    {
+        public Model.Entity.ChatMessage ChatMessage { get; set; }
+        public GetUserDto ReceivedUser { get; set; }
+    }
 
-    public async Task SaveMessage(long userId, SendChatMessageDto sendChatMessageDto)
+    public async Task<SaveMessageResponse> SaveMessage(long userId, SendChatMessageDto sendChatMessageDto)
     {
         // get specified user
         var receiverUser = await _userService.GetUserById(sendChatMessageDto.UserId);
@@ -32,10 +39,21 @@ public class ChatMessageService : IChatMessageService
             throw new NotFoundException("Specified user not found");
         }
 
-        var newChatMessage = await _chatMessageRepository.CreateChatMessage(
+        var chatMessage = await _chatMessageRepository.CreateChatMessage(
             userId: userId,
             receiverUserId: receiverUser.Id,
             message: sendChatMessageDto.Message
         );
+
+        return new()
+        {
+            ChatMessage = chatMessage,
+            ReceivedUser = receiverUser
+        };
+    }
+
+    public Task<List<Model.Entity.ChatMessage>> GetMessages(long userId, long receiverId)
+    {
+        return _chatMessageRepository.GetMessages(userId, receiverId);
     }
 }

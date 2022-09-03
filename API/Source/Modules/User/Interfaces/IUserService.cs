@@ -8,7 +8,7 @@ public interface IUserService
 {
     Task<bool> CheckIfEmailExists(string email);
 
-    Task<GetUserDto> GetUserById(
+    Task<GetUserDto?> GetUserById(
         long userId,
         bool? loadSenderChatMessages = null,
         bool? loadReceiverChatMessages = null

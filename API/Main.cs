@@ -14,7 +14,7 @@ using Swashbuckle.AspNetCore.SwaggerUI;
 
 //================================================
 //TODO permission and roles
-//TODO add online status updates via socket connect and disconnect
+//TODO request signups created at has bug -infinity
 //================================================
 
 var builder = WebApplication.CreateBuilder(args);
