@@ -1,9 +1,9 @@
 using API.Source.Exception.Http;
-using API.Source.Exception.Validation;
 using API.Source.Modules.ChatMessage.Dto;
 using API.Source.Modules.ChatMessage.Interfaces;
 using API.Source.Modules.User.Dto;
 using API.Source.Modules.User.Interfaces;
+using AutoMapper;
 
 namespace API.Source.Modules.ChatMessage;
 
@@ -11,13 +11,15 @@ public class ChatMessageService : IChatMessageService
 {
     private readonly IChatMessageRepository _chatMessageRepository;
     private readonly IUserService _userService;
+    private readonly IMapper _mapper;
 
-    public ChatMessageService(IChatMessageRepository chatMessageRepository, IUserService userService)
+    public ChatMessageService(IChatMessageRepository chatMessageRepository, IUserService userService, IMapper mapper)
     {
         _chatMessageRepository = chatMessageRepository;
         _userService = userService;
+        _mapper = mapper;
     }
-    
+
     public class SaveMessageResponse
     {
         public Model.Entity.ChatMessage ChatMessage { get; set; }
@@ -28,6 +30,7 @@ public class ChatMessageService : IChatMessageService
     {
         // get specified user
         var receiverUser = await _userService.GetUserById(sendChatMessageDto.UserId);
+        var receiverUserDto = _mapper.Map<GetUserDto>(receiverUser);
 
         if (sendChatMessageDto.UserId == userId)
         {
@@ -48,7 +51,7 @@ public class ChatMessageService : IChatMessageService
         return new()
         {
             ChatMessage = chatMessage,
-            ReceivedUser = receiverUser
+            ReceivedUser = receiverUserDto
         };
     }
 

@@ -38,7 +38,7 @@ public class AuthenticationService : IAuthenticationService
         _jwtTokenService = jwtTokenService;
     }
 
-    public async Task<Model.Entity.RequestSignup> SignupRequest(string email)
+    public async Task<Model.Entity.RequestSignup> SignUpConfirm(string email)
     {
         var doesEmailExist = await _userService.CheckIfEmailExists(email);
         var randomCode = _helper.GenerateRandomInt();
@@ -55,7 +55,37 @@ public class AuthenticationService : IAuthenticationService
         return result;
     }
 
-    public async Task<AuthenticationPayloadDto> SignUpConfirmVerificationCode(SignUpConfirmVerificationCodeDto body)
+    public async Task<AuthenticationPayloadDto> SignIn(string email, string password)
+    {
+        var user = await _userService.GetUserByEmail(email);
+
+        if (user is null)
+        {
+            throw new NotFoundException(ExceptionMessageCode.UserNotFound);
+            // throw new NotFoundException("User with given email doesn't exist");
+        }
+
+        var signInResult = await _signInManager.CheckPasswordSignInAsync(user, password, false);
+
+        if (!signInResult.Succeeded)
+        {
+            throw new UnauthorizedException(ExceptionMessageCode.InvalidEmailOrPassword);
+        }
+
+        var tokenPayload = new AuthenticationTokenPayload(user.Email, user.Id, user.UserName);
+        var accessToken = _jwtTokenService.GenerateAccessToken(tokenPayload);
+        var refreshToken = _jwtTokenService.GenerateRefreshToken(tokenPayload);
+
+        await _userService.AddRefreshTokenByUserId(user.Id, refreshToken);
+
+        return new AuthenticationPayloadDto
+        {
+            AccessToken = accessToken,
+            RefreshToken = refreshToken
+        };
+    }
+
+    public async Task<AuthenticationPayloadDto> SignUp(SignUp body)
     {
         var requestSignupById = await _requestSignupService.GetRequestSignupByIdAndEmail(body.Id, body.Email);
 
@@ -69,6 +99,13 @@ public class AuthenticationService : IAuthenticationService
         if (requestSignupById.Code != body.Code)
         {
             throw new ForbiddenException(ExceptionMessageCode.InvalidVerificationCode);
+        }
+
+        var userWithUsername = await _userService.GetUserByUsername(body.Username);
+
+        if (userWithUsername is not null)
+        {
+            throw new BadRequestException(ExceptionMessageCode.UsernameAlreadyTaken);
         }
 
         // then save all data
@@ -90,35 +127,6 @@ public class AuthenticationService : IAuthenticationService
 
         // delete request sign up
         await _requestSignupService.DeleteRequestSignUpById(requestSignupById.Id);
-
-        return new AuthenticationPayloadDto
-        {
-            AccessToken = accessToken,
-            RefreshToken = refreshToken
-        };
-    }
-
-    public async Task<AuthenticationPayloadDto> SignIn(string email, string password)
-    {
-        var user = await _userService.GetUserByEmail(email);
-
-        if (user is null)
-        {
-            throw new NotFoundException("User with given email doesn't exist");
-        }
-
-        var signInResult = await _signInManager.CheckPasswordSignInAsync(user, password, false);
-
-        if (!signInResult.Succeeded)
-        {
-            throw new UnauthorizedException(ExceptionMessageCode.InvalidEmailOrPassword);
-        }
-
-        var tokenPayload = new AuthenticationTokenPayload(user.Email, user.Id, user.UserName);
-        var accessToken = _jwtTokenService.GenerateAccessToken(tokenPayload);
-        var refreshToken = _jwtTokenService.GenerateRefreshToken(tokenPayload);
-
-        await _userService.AddRefreshTokenByUserId(user.Id, refreshToken);
 
         return new AuthenticationPayloadDto
         {

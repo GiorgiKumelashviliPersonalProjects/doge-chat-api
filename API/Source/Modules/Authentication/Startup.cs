@@ -40,6 +40,8 @@ public static class Startup
                     {
                         var accessToken = context.Request.Query["access_token"];
                         var path = context.HttpContext.Request.Path;
+                        
+                        Console.WriteLine(!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs"));
 
                         if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs"))
                         {

@@ -1,6 +1,6 @@
-namespace API.Source.Modules.User.Dto;
+namespace API.Source.Modules.ChatMessage.Dto;
 
-public class GetUserChatMessageDto
+public class ChatMessageDto
 {
     public long Id { get; set; }
     public string Message { get; set; }

@@ -8,7 +8,7 @@ public interface IUserService
 {
     Task<bool> CheckIfEmailExists(string email);
 
-    Task<GetUserDto?> GetUserById(
+    Task<Model.Entity.User?> GetUserById(
         long userId,
         bool? loadSenderChatMessages = null,
         bool? loadReceiverChatMessages = null
@@ -32,4 +32,5 @@ public interface IUserService
     Task<UserIdEmailProjection?> GetUserIdByRefreshToken(string refreshToken);
     Task ClearRefreshTokensByUserId(long decodedPayloadUserId);
     Task DeleteRefreshToken(string refreshToken);
+    Task<Model.Entity.User?> GetUserByUsername(string bodyUsername);
 }

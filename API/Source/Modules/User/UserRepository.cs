@@ -1,5 +1,4 @@
 using API.Source.Exception.Http;
-using API.Source.Exception.Validation;
 using API.Source.Model.Enum;
 using API.Source.Modules.User.Interfaces;
 using Microsoft.AspNetCore.Identity;
@@ -25,7 +24,7 @@ public class UserRepository : IUserRepository
 
     public async Task<List<Model.Entity.User>> GetUsers()
     {
-        return await _userManager.Users.ToListAsync();
+        return await _userManager.Users.OrderByDescending(u => u.Id).AsNoTracking().ToListAsync();
     }
 
     public async Task<Model.Entity.User> CreateEntity(
@@ -65,6 +64,11 @@ public class UserRepository : IUserRepository
         // log error
         InternalServerException.ThrowCustomException(_logger, createResult);
         return null!;
+    }
+
+    public async Task<Model.Entity.User?> GetUserByUsername(string username)
+    {
+        return await _userManager.Users.SingleOrDefaultAsync(u => u.UserName == username);
     }
 
     public async Task<Model.Entity.User?> GetUserByEmail(string email)

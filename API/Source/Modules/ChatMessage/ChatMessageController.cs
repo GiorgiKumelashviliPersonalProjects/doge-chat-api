@@ -4,8 +4,9 @@ using API.Source.Modules.ChatMessage.Dto;
 using API.Source.Modules.ChatMessage.Interfaces;
 using API.Source.Modules.User.Interfaces;
 using API.Source.SignalR;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
+
 
 namespace API.Source.Modules.ChatMessage;
 
@@ -16,16 +17,19 @@ public class ChatMessageController : ControllerBase
     private readonly IChatMessageService _chatMessageService;
     private readonly IMainHubService _mainHubService;
     private readonly IUserService _userService;
+    private readonly IMapper _mapper;
 
     public ChatMessageController(
         IChatMessageService chatMessageService,
         IMainHubService mainHubService,
-        IUserService userService
+        IUserService userService,
+        IMapper mapper
     )
     {
         _chatMessageService = chatMessageService;
         _mainHubService = mainHubService;
         _userService = userService;
+        _mapper = mapper;
     }
 
     [HttpGet("{id:long}")]
@@ -41,7 +45,9 @@ public class ChatMessageController : ControllerBase
             throw new NotFoundException("User not found");
         }
 
-        return await _chatMessageService.GetMessages(userId, user.Id);
+        var result = await _chatMessageService.GetMessages(userId, user.Id);
+        
+        return _mapper.Map<List<ChatMessageDto>>(result);
     }
 
     [HttpPost("send")]

@@ -17,19 +17,17 @@ public class AuthenticationController : ControllerBase
         _authenticationService = authenticationService;
     }
 
-    [HttpPost("SignUp/Request")]
-    public async Task<OkObjectResult> SignUpRequest([FromBody] SignupRequestDto body)
+    [HttpPost("SignUp/Confirm")]
+    public async Task<OkObjectResult> SignUpConfirm([FromBody] SignupConfirmDto body)
     {
-        var result = await _authenticationService.SignupRequest(body.Email);
+        var result = await _authenticationService.SignUpConfirm(body.Email);
         return Ok(new { id = result.Id });
     }
 
-    [HttpPost("SignUp/ConfirmVerificationCode")]
-    public async Task<ActionResult<AuthenticationPayloadDto>> SignUpConfirmVerificationCode(
-        [FromBody] SignUpConfirmVerificationCodeDto body
-    )
+    [HttpPost("SignUp")]
+    public async Task<ActionResult<AuthenticationPayloadDto>> SignUp([FromBody] SignUp body)
     {
-        var result = await _authenticationService.SignUpConfirmVerificationCode(body);
+        var result = await _authenticationService.SignUp(body);
         return Ok(result);
     }
 

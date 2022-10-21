@@ -18,4 +18,5 @@ public static class ExceptionMessageCode
     public const string SignUpRequestNotFound = nameof(SignUpRequestNotFound);
     public const string RequestNotVerified = nameof(RequestNotVerified);
     public const string UserNotFound = nameof(UserNotFound);
+    public static string UsernameAlreadyTaken = nameof(UsernameAlreadyTaken);
 }

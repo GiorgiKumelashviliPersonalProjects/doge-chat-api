@@ -16,6 +16,9 @@ public class MainHub : Hub
 
     public override async Task OnConnectedAsync()
     {
+        Console.WriteLine("================================================================");
+        Console.WriteLine("User connected");
+        
         var username = Context.User.GetUsername();
 
         // track connected username by connection id
@@ -26,6 +29,11 @@ public class MainHub : Hub
 
         // send to all other socket that user has connected
         await Clients.Others.SendAsync(SignalREventsEnum.UserIsOnline.ToString(), username);
+        
+        // await Clients
+        //     .Group(username)
+        //     .SendAsync(SignalREventsEnum.SendMessage.ToString(), "testing");
+        
         await base.OnConnectedAsync();
     }
 

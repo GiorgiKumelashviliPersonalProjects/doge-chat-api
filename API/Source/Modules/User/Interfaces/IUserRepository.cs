@@ -24,4 +24,6 @@ public interface IUserRepository
         Gender gender,
         DateTime birthDate
     );
+
+    Task<Model.Entity.User?> GetUserByUsername(string username);
 }

@@ -1,4 +1,5 @@
 using API.Source.Model.Entity;
+using API.Source.Modules.ChatMessage.Dto;
 using API.Source.Modules.User.Dto;
 using AutoMapper;
 
@@ -10,6 +11,6 @@ public class AutoMapperProfileConfig : Profile
     {
         CreateMap<User, GetUserDto>();
         CreateMap<User, UserDto>();
-        CreateMap<ChatMessage, GetUserChatMessageDto>();
+        CreateMap<ChatMessage, ChatMessageDto>();
     }
 }

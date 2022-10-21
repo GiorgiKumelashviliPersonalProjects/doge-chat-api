@@ -76,5 +76,5 @@ if (!app.Environment.IsDevelopment())
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-app.MapHub<MainHub>("hubs/main");
+app.MapHub<MainHub>("hubs/mainHub");
 app.Run();

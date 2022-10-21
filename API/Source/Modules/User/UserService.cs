@@ -29,17 +29,15 @@ public class UserService : IUserService
         return await _userRepository.CheckUserByEmail(email);
     }
 
-    public async Task<GetUserDto?> GetUserById(long userId,
+    public async Task<Model.Entity.User?> GetUserById(long userId,
         bool? loadSenderChatMessages = null,
         bool? loadReceiverChatMessages = null)
     {
-        var result = await _userRepository.GetUserById(
+        return await _userRepository.GetUserById(
             userId: userId,
             loadSenderChatMessages: loadSenderChatMessages,
             loadReceiverChatMessages: loadReceiverChatMessages
         );
-
-        return result is null ? null : _mapper.Map<GetUserDto>(result);
     }
 
     public async Task<List<UserDto>> GetUsers()
@@ -49,9 +47,9 @@ public class UserService : IUserService
     }
 
 
-    public Task<Model.Entity.User?> GetUserByEmail(string email)
+    public async Task<Model.Entity.User?> GetUserByEmail(string email)
     {
-        return _userRepository.GetUserByEmail(email);
+        return await _userRepository.GetUserByEmail(email);
     }
 
     public Task<Model.Entity.User> CreateUser(
@@ -72,9 +70,9 @@ public class UserService : IUserService
         await _refreshTokenRepository.AddRefreshTokenByUserId(userId, refreshToken);
     }
 
-    public Task<UserIdEmailProjection?> GetUserIdByRefreshToken(string refreshToken)
+    public async Task<UserIdEmailProjection?> GetUserIdByRefreshToken(string refreshToken)
     {
-        return _refreshTokenRepository.GetUserIdByRefreshToken(refreshToken);
+        return await _refreshTokenRepository.GetUserIdByRefreshToken(refreshToken);
     }
 
     public async Task ClearRefreshTokensByUserId(long decodedPayloadUserId)
@@ -85,5 +83,10 @@ public class UserService : IUserService
     public async Task DeleteRefreshToken(string refreshToken)
     {
         await _refreshTokenRepository.DeleteByValue(refreshToken);
+    }
+
+    public async Task<Model.Entity.User?> GetUserByUsername(string username)
+    {
+        return await _userRepository.GetUserByUsername(username);
     }
 }

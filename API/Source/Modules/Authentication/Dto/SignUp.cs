@@ -4,9 +4,9 @@ using API.Source.Model.Enum;
 
 namespace API.Source.Modules.Authentication.Dto;
 
-public class SignUpConfirmVerificationCodeDto
+public class SignUp
 {
-    public SignUpConfirmVerificationCodeDto(
+    public SignUp(
         int id,
         string code,
         string username,
