@@ -24,7 +24,7 @@ public static class UserClaimExtension
 
     public static string GetUsername(this ClaimsPrincipal? claimsPrincipal)
     {
-        var claim = claimsPrincipal?.Claims.FirstOrDefault(claim => claim.Type == AppClaimType.UserId);
+        var claim = claimsPrincipal?.Claims.FirstOrDefault(claim => claim.Type == AppClaimType.Username);
         var username = claim?.Value;
         
         if (username is null)
