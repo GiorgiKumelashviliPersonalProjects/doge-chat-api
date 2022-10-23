@@ -46,22 +46,22 @@ public class ChatMessageController : ControllerBase
         }
 
         var result = await _chatMessageService.GetMessages(userId, user.Id);
-        
+
         return _mapper.Map<List<ChatMessageDto>>(result);
     }
 
     [HttpPost("send")]
-    public async Task<OkObjectResult> SendMessage([FromBody] SendChatMessageDto sendChatMessageDto)
+    public async Task<ChatMessageDto> SendMessage([FromBody] SendChatMessageDto sendChatMessageDto)
     {
         var userId = User.GetUserId();
 
         // validate and save in database
         var result = await _chatMessageService.SaveMessage(userId, sendChatMessageDto);
+        var chatMessageDto = _mapper.Map<ChatMessageDto>(result.ChatMessage);
 
         // notify receiver through socket
-        // await _mainHubService.SendMessage(result.ReceivedUser.Username, sendChatMessageDto.Message, result.ReceivedUser.Id);
-        await _mainHubService.SendMessage(result.ReceivedUser.Username, _mapper.Map<ChatMessageDto>(result.ChatMessage));
+        await _mainHubService.SendMessage(result.ReceivedUser.Username, chatMessageDto);
 
-        return Ok(new { message = "Message sent successfully", item = result.ChatMessage });
+        return chatMessageDto;
     }
 }
