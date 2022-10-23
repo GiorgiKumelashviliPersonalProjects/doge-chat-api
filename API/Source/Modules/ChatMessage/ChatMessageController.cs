@@ -59,7 +59,8 @@ public class ChatMessageController : ControllerBase
         var result = await _chatMessageService.SaveMessage(userId, sendChatMessageDto);
 
         // notify receiver through socket
-        await _mainHubService.SendMessage(result.ReceivedUser.Username, sendChatMessageDto.Message);
+        // await _mainHubService.SendMessage(result.ReceivedUser.Username, sendChatMessageDto.Message, result.ReceivedUser.Id);
+        await _mainHubService.SendMessage(result.ReceivedUser.Username, _mapper.Map<ChatMessageDto>(result.ChatMessage));
 
         return Ok(new { message = "Message sent successfully", item = result.ChatMessage });
     }

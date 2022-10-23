@@ -33,6 +33,7 @@ public class ChatMessageRepository : IChatMessageRepository
         return await _dataContext
             .ChatMessages
             .Where(e => e.SenderId == userId && e.ReceiverId == receiverId || e.SenderId == receiverId && e.ReceiverId == userId)
+            .OrderByDescending(e => e.CreatedAt)
             .ToListAsync();
     }
 }

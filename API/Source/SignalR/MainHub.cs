@@ -17,6 +17,7 @@ public class MainHub : Hub
     public override async Task OnConnectedAsync()
     {
         var username = Context.User.GetUsername();
+        var userId = Context.User.GetUserId();
 
         // track connected username by connection id
         await _tracker.UserConnected(username, Context.ConnectionId);
@@ -25,14 +26,17 @@ public class MainHub : Hub
         await Groups.AddToGroupAsync(Context.ConnectionId, username);
 
         // send to all other socket that user has connected
-        await Clients.Others.SendAsync(SignalREventsEnum.UserIsOnline.ToString(), username);
-        
+        await Clients.Others.SendAsync(SignalREventsEnum.UserIsOnline.ToString(), new
+        {
+            receiverId = userId
+        });
         await base.OnConnectedAsync();
     }
 
     public override async Task OnDisconnectedAsync(System.Exception? exception)
     {
         var username = Context.User.GetUsername();
+        var userId = Context.User.GetUserId();
 
         // track connected username by connection id
         await _tracker.UserDisConnected(username, Context.ConnectionId);
@@ -41,7 +45,10 @@ public class MainHub : Hub
         await Groups.RemoveFromGroupAsync(Context.ConnectionId, username);
 
         // send to all other socket that user has disconnected
-        await Clients.Others.SendAsync(SignalREventsEnum.UserIsOffline.ToString(), username);
+        await Clients.Others.SendAsync(SignalREventsEnum.UserIsOffline.ToString(), new
+        {
+            receiverId = userId
+        });
         await base.OnDisconnectedAsync(exception);
     }
 }
